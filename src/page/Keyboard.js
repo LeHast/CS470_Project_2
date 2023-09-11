@@ -39,12 +39,12 @@ const Keyboard = (props) => {
 
     return (
         <Fragment>
-            <Grid  container columns={11}  // hard-coded value -- this is the number of demo keys
+            <Grid  container columns={10}  // hard-coded value -- this is the number of demo keys
                 sx={{
-                    width: 5 * keyboardBoxSizes.width + (KeysRow1Num - 1) * keyboardRowsHGap + 200,
+                    width: 5 * keyboardBoxSizes.width + (KeysRow1Num - 1) * keyboardRowsHGap + 300,
                 }}>
                 {
-                    keyboard.map((keyAttributes, idx) =>
+                    keyboard.slice(0,10).map((keyAttributes, idx) =>
                         <Grid item
                             key={idx}
                             xs={1}
@@ -55,6 +55,42 @@ const Keyboard = (props) => {
                     )
                 }
             </Grid>
+
+            <Grid  container columns={10}  // hard-coded value -- this is the number of demo keys
+                sx={{
+                    width: 5 * keyboardBoxSizes.width + (KeysRow1Num - 1) * keyboardRowsHGap + 300,
+                }}>
+                {
+                    keyboard.slice(10,19).map((keyAttributes, idx) =>
+                        <Grid item
+                            key={idx}
+                            xs={1}
+                            sx={{mb: 1}}
+                            onClick={() => onClickCallback(keyAttributes)}>
+                            <KeyboardLetterBox keyAttributes={keyAttributes}/>
+                        </Grid>
+                    )
+                }
+            </Grid>
+
+            <Grid  container columns={10}  // hard-coded value -- this is the number of demo keys
+                sx={{
+                    width: 5 * keyboardBoxSizes.width + (KeysRow1Num - 1) * keyboardRowsHGap + 300,
+                }}>
+                {
+                    keyboard.slice(19,KeysRow1Num).map((keyAttributes, idx) =>
+                        <Grid item
+                            key={idx}
+                            xs={1}
+                            sx={{mb: 1}}
+                            onClick={() => onClickCallback(keyAttributes)}>
+                            <KeyboardLetterBox keyAttributes={keyAttributes}/>
+                        </Grid>
+                    )
+                }
+            </Grid>
+
+
         </Fragment>
     )
 }
