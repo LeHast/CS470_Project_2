@@ -14,13 +14,13 @@ const ListOfWords = require("./utils/fiveLetterWords.json");
 
 // Logic for grid
 const randomIndex = Math.floor(Math.random() * ListOfWords.words.length);
-//const answer = ListOfWords.words[randomIndex];
-const answer = 'mmang';
+const answer = ListOfWords.words[randomIndex];
+//const answer = 'mmmmm';
 
 let letterUsedNoMatch = [];
 console.log (answer);
 
-let saveAll;
+let stopGame = false;
 
 // =====================================================================================================================
 // Main App 
@@ -69,6 +69,9 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
   const keyboardKeyPressedCallBack = (attrsOfKeyThatUserClicked) => {
     // Print current key
 
+    if (stopGame)
+      return;
+
     if (activeRowIdx === 0 && attrsOfKeyThatUserClicked.isBackspaceKey) {
       return; // activeRow is empty as such, there are no letters to erase.
     }
@@ -89,10 +92,10 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
       // the number of elements in remainingRows gets reduced by 5.
       // if the remainingRows is empty, game is over. Display a message in the
       // message center.
-      if (remainingRows.length <= 0 && completedRows.length === 25) {
-        console.log('No More Spaces Left');
-        return;
-      }
+      // if (remainingRows.length <= 0 && completedRows.length === 25) {
+      //   console.log('No More Spaces Left');
+      //   return;
+      // }
 
 
       // Get the input word and checks if the word is in the json file.
@@ -116,30 +119,41 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
 
       // ++++++++++++++++++++++++++++++++++++++++++++++++
       // Compare the answer and the input.
-      // Check for correct character in position.
+      // Check for correct character in row.
       const tempRow = activeRow.slice();
-      for (let index = 0; index < answerForCompare.length; index++) {
-        for (let indexy = 0; indexy < inputWordToCompare.length; indexy++) {
-          if (answerForCompare[indexy] === inputWordToCompare[index]){
-            tempRow[index] = {...boxStyleVariants.partialMatch, letter: inputWordToCompare[index],};
-          }
-          
+      tempRow.forEach(element => {
+          element.letter = element.letter.toLowerCase();
+      });
+      let tempAnswer = [...answerForCompare]
+      inputWordToCompare.forEach((characterTocCompare, idx) => {
+      let arrIndex = tempAnswer.indexOf(characterTocCompare);
+      if (arrIndex !== -1){
+          tempRow[idx] = {...boxStyleVariants.partialMatch, letter: inputWordToCompare[idx],};
+          tempAnswer.splice(arrIndex, 1);
         }
-      }
+      });
       // Correct position.
-      for (let index = 0; index <inputWordToCompare.length; index++) {
-        let winCount = 0;
-        if (answerForCompare[index] === inputWordToCompare[index]) {
-          tempRow[index] = {...boxStyleVariants.exactMatch, letter: inputWordToCompare[index],};
-          winCount++;
-          if (winCount > 4){  // Win condition
-            console.log("Win");
-            return;
+      tempAnswer = [...answerForCompare]
+      let winCount = 0;
+      inputWordToCompare.forEach((characterTocCompare, idx) => {
+        let arrIndex = tempAnswer.indexOf(characterTocCompare);
+        if (arrIndex !== -1 && inputWordToCompare[idx] === answerForCompare[idx]){
+          tempRow[idx] = {...boxStyleVariants.exactMatch, letter: inputWordToCompare[idx],};
+          tempAnswer.splice(arrIndex, 1);
+            winCount++;
+            if (winCount > 4){  // Win condition
+              console.log("Win");
+              stopGame = true;
+            }
           }
-        }
-      }
+        });
+
+
       for (let index = 0; index <inputWordToCompare.length; index++) { // No match
-        if (tempRow[index].backgroundColor === boxStyleVariants.blankBox.backgroundColor) {
+        if (tempRow[index].backgroundColor === boxStyleVariants.blankBox.backgroundColor && answerForCompare.includes(inputWordToCompare[index])) {
+          tempRow[index] = {...boxStyleVariants.blankBox, letter: inputWordToCompare[index].toUpperCase(),};
+        }        
+        else if (tempRow[index].backgroundColor === boxStyleVariants.blankBox.backgroundColor && !tempAnswer.includes(inputWordToCompare[index])) {
           tempRow[index] = {...boxStyleVariants.noMatch, letter: inputWordToCompare[index].toUpperCase(),};
           letterUsedNoMatch.push(tempRow[index])
         }
@@ -156,10 +170,20 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
       letterUsedNoMatch = [];
       setKeyboard(tempkeyboard);
 
+
+      // Make the temp row letters to Upper case letters.
+      tempRow.forEach((element)=> {
+        element.letter = element.letter.toUpperCase();
+      })
+      if (stopGame || completedRows.length === 25){
+        setActiveRow(tempRow)
+        return;
+      }
+
+
       // Change to the next row.
       // Add the active line to completedRrow
       tempRow.forEach((element)=> {
-        element.letter = element.letter.toUpperCase();
         completedRows.push(element);
       })
 
@@ -167,6 +191,7 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
       for (let i = 0; i < 5; i++) {
         remainingRows.shift();
       }
+
 
       const newActiveRow = new Array(numGuessAreaColumns).fill(boxStyleVariants.notEvaluated);
       setActiveRow(newActiveRow);
