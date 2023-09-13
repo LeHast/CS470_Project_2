@@ -1,3 +1,6 @@
+// Add overlay win or lose condition
+// Make it look better
+// uncoment line 114
 import React, { Fragment, useState } from "react";
 import Box from "@mui/material/Box";
 import { green, blue } from "@mui/material/colors";
@@ -18,7 +21,7 @@ const answer = ListOfWords.words[randomIndex];
 //const answer = 'mmmmm';
 
 let letterUsedNoMatch = [];
-console.log (answer);
+console.log ('Answer = ' + answer);
 
 let stopGame = false;
 
@@ -108,7 +111,7 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
       console.log(inputWordToFind);
       if (!ListOfWords.words.includes(inputWordToFind)) {
         console.log("No valid Word");
-        //return;
+        //return; // UNCOMENT FOR BUILD
       }
 
       // Gets the answer to compare.
@@ -148,8 +151,8 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
           }
         });
 
-
-      for (let index = 0; index <inputWordToCompare.length; index++) { // No match
+      // No match
+      for (let index = 0; index <inputWordToCompare.length; index++) { 
         if (tempRow[index].backgroundColor === boxStyleVariants.blankBox.backgroundColor && answerForCompare.includes(inputWordToCompare[index])) {
           tempRow[index] = {...boxStyleVariants.blankBox, letter: inputWordToCompare[index].toUpperCase(),};
         }        
