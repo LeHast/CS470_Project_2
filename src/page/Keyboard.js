@@ -27,6 +27,7 @@ const KeyboardLetterBox = (props) => {
             fontWeight: 'bold',
             
         }}>
+
             {keyAttributes.letter}
         </Box>
     )
