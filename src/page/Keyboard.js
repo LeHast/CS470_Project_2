@@ -1,6 +1,7 @@
 import React, {Fragment} from 'react';
 import Box from '@mui/material/Box';
 import { Grid} from "@mui/material";
+import CheckIcon from '@mui/icons-material/Check';
 
 import {
     keyboardBoxSizes,
@@ -11,17 +12,20 @@ import boxStyleVariants from '../utils/keyboardAndGuessAreaBoxTypes';
 const KeyboardLetterBox = (props) => {
 
     const {keyAttributes} = props;
+    const {keySizeW, keySizeH } = props;
 
     // console.log(`keyboardBoxSizes ${JSON.stringify(keyAttributes)}`);
 
     return (
         <Box sx={{
-            ...keyboardBoxSizes,
+            ...keySizeW,
+            ...keySizeH,
             border: 1,
             ...keyAttributes,
             textAlign: 'center',
             fontSize: 28,
             fontWeight: 'bold',
+            
         }}>
             {keyAttributes.letter}
         </Box>
@@ -48,9 +52,15 @@ const Keyboard = (props) => {
                         <Grid item
                             key={idx}
                             xs={1}
-                            sx={{mb: 1}}
+                            sx={{
+                                mb: 1,
+                                paddingTop: 4,
+                            }}
                             onClick={() => onClickCallback(keyAttributes)}>
-                            <KeyboardLetterBox keyAttributes={keyAttributes}/>
+                            <KeyboardLetterBox keyAttributes={keyAttributes} 
+                                keySizeW={{width: 90}}
+                                keySizeH={{height: 60}}
+                            />
                         </Grid>
                     )
                 }
@@ -65,9 +75,16 @@ const Keyboard = (props) => {
                         <Grid item
                             key={idx}
                             xs={1}
-                            sx={{mb: 1}}
+                            sx={{
+                                mb: 1,
+                                paddingLeft: 4,
+                            }}
                             onClick={() => onClickCallback(keyAttributes)}>
-                            <KeyboardLetterBox keyAttributes={keyAttributes}/>
+                            <KeyboardLetterBox 
+                                keyAttributes={keyAttributes}
+                                keySizeW={{width: 90}}
+                                keySizeH={{height: 60}}
+                            />
                         </Grid>
                     )
                 }
@@ -82,9 +99,16 @@ const Keyboard = (props) => {
                         <Grid item
                             key={idx}
                             xs={1}
-                            sx={{mb: 1}}
+                            sx={{
+                                mb: 1,
+                                paddingLeft: 4,
+                            }}
                             onClick={() => onClickCallback(keyAttributes)}>
-                            <KeyboardLetterBox keyAttributes={keyAttributes}/>
+                            <KeyboardLetterBox 
+                                keyAttributes={keyAttributes}
+                                keySizeW={{width: 90}}
+                                keySizeH={{height: 60}}
+                            />
                         </Grid>
                     )
                 }

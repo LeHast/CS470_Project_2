@@ -13,7 +13,8 @@ const LetterContainer = (props) => {
         height: 32, 
         width: 32,
         padding:6, 
-        
+        color: '#EDF5FD',
+        backgroundColor: '#4393E4',
         }}>{letter}
     </Button>
     )

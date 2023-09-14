@@ -4,11 +4,13 @@
 import React, { Fragment, useState } from "react";
 import Box from "@mui/material/Box";
 import { green, blue } from "@mui/material/colors";
+import Divider from '@mui/material/Divider';
 
 import GuessArea from "./page/GuessArea";
 import Keyboard from "./page/Keyboard";
 import MessageCenter from "./page/MessageCenter";
 import TopBanner from "./page/TopBanner";
+import BasicModal from "./components/BasicModal"
 
 import { numGuessAreaRows, numGuessAreaColumns } from "./utils/sizes";
 import boxStyleVariants from "./utils/keyboardAndGuessAreaBoxTypes";
@@ -24,7 +26,7 @@ let letterUsedNoMatch = [];
 console.log ('Answer = ' + answer);
 
 let stopGame = false;
-
+let win = false;
 // =====================================================================================================================
 // Main App 
 function App() {
@@ -71,7 +73,7 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
   // Keyboard Callbacks
   const keyboardKeyPressedCallBack = (attrsOfKeyThatUserClicked) => {
     // Print current key
-
+    //console.log(stopGame);
     if (stopGame)
       return;
 
@@ -108,9 +110,9 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
         inputWordToCompare.push(inActiveRow.letter.toLowerCase());
         inputWordToFind += inActiveRow.letter.toLowerCase();
       });
-      console.log(inputWordToFind);
+      //console.log(inputWordToFind);
       if (!ListOfWords.words.includes(inputWordToFind)) {
-        console.log("No valid Word");
+        //console.log("No valid Word");
         //return; // UNCOMENT FOR BUILD
       }
 
@@ -128,15 +130,9 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
           element.letter = element.letter.toLowerCase();
       });
       let tempAnswer = [...answerForCompare]
-      inputWordToCompare.forEach((characterTocCompare, idx) => {
-      let arrIndex = tempAnswer.indexOf(characterTocCompare);
-      if (arrIndex !== -1){
-          tempRow[idx] = {...boxStyleVariants.partialMatch, letter: inputWordToCompare[idx],};
-          tempAnswer.splice(arrIndex, 1);
-        }
-      });
+
       // Correct position.
-      tempAnswer = [...answerForCompare]
+      //tempAnswer = [...answerForCompare]
       let winCount = 0;
       inputWordToCompare.forEach((characterTocCompare, idx) => {
         let arrIndex = tempAnswer.indexOf(characterTocCompare);
@@ -145,11 +141,22 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
           tempAnswer.splice(arrIndex, 1);
             winCount++;
             if (winCount > 4){  // Win condition
-              console.log("Win");
+              //console.log("Win");
               stopGame = true;
+              win = true;
             }
           }
         });
+
+      inputWordToCompare.forEach((characterTocCompare, idx) => {
+        let arrIndex = tempAnswer.indexOf(characterTocCompare);
+        if (arrIndex !== -1){
+            tempRow[idx] = {...boxStyleVariants.partialMatch, letter: inputWordToCompare[idx],};
+            tempAnswer.splice(arrIndex, 1);
+          }
+      });
+
+
 
       // No match
       for (let index = 0; index <inputWordToCompare.length; index++) { 
@@ -178,7 +185,8 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
       tempRow.forEach((element)=> {
         element.letter = element.letter.toUpperCase();
       })
-      if (stopGame || completedRows.length === 25){
+      if (completedRows.length === 25){
+        stopGame = true;
         setActiveRow(tempRow)
         return;
       }
@@ -221,30 +229,40 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
     setActiveRowIdx(activeRowIdx + 1);
     //letterUsedNoMatch.push(attrsOfKeyThatUserClicked);
     // console.log(JSON.stringify(activeRow));
-};
+  };
 
 
   return (
     <Fragment>
       <Box
         margin="auto"
-        sx={{
-          height: 1600,
+        sx={{    
           width: 1000,
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-top ",
           alignItems: 'center',
-        }}
-      >
+        }}>
         <TopBanner />
         <GuessArea guessAreaBoxes={allBoxes} />
-        <MessageCenter />
+
         <Keyboard
           keyboard={keyboard}
           onClickCallback={keyboardKeyPressedCallBack}
         />
       </Box>
+      <BasicModal toOpen={stopGame} toWin={win} />
+
+      <Box
+        sx={{
+          paddingTop: '100px',
+          mx: '20%'
+        }} >
+        <MessageCenter msg='Daniel Galarza' />
+
+      </Box>
+
+
     </Fragment>
   );
 }

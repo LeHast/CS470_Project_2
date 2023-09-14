@@ -44,13 +44,16 @@ const GuessArea = (props) => {
         container
         columns={numGuessAreaColumns}
         sx={{
-          width:
-            numGuessAreaColumns * guessBoxSizes.width +
-            (numGuessAreaColumns - 1) * guessRowsHGap,
+          width:numGuessAreaColumns * guessBoxSizes.width + (numGuessAreaColumns - 1) * guessRowsHGap,
         }}
       >
         {guessAreaBoxes.map((elementAttributes, idx) => (
-          <Grid item key={idx} sx={{ mb: 1 }} xs={1}>
+          <Grid item
+            key={idx} 
+            xs={1}
+            sx={{
+              mb: 1,}}
+          >
             <LetterBox boxAttributes={elementAttributes} />
           </Grid>
         ))}
