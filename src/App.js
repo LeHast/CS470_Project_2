@@ -1,10 +1,6 @@
-// Add overlay win or lose condition
-// Make it look better
-// uncoment line 114
 import React, { Fragment, useState } from "react";
 import Box from "@mui/material/Box";
-import { green, blue } from "@mui/material/colors";
-import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 
 import GuessArea from "./page/GuessArea";
 import Keyboard from "./page/Keyboard";
@@ -21,20 +17,19 @@ const ListOfWords = require("./utils/fiveLetterWords.json");
 const randomIndex = Math.floor(Math.random() * ListOfWords.words.length);
 const answer = ListOfWords.words[randomIndex];
 //const answer = 'mmmmm';
+let textForInfo = 'Type a 5 character word!';
 
 let letterUsedNoMatch = [];
 console.log ('Answer = ' + answer);
 
 let stopGame = false;
 let win = false;
+
+
 // =====================================================================================================================
 // Main App 
 function App() {
-const KeysRow1 = ["Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Z","X","C","V","B","N","M",];
-
-const KeysRow2 = ["Q","W","E","R","T","Y","U","I","O","P"];
-const KeysRow3 = ["S","D","F","G","H","J","K","L"];
-const KeysRow4 = ["Z","X","C","V","B","N","M",];
+  const KeysRow1 = ["Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Z","X","C","V","B","N","M",];
 
   const initialKeyBoard = () => {
     let keys = KeysRow1.map((letter) => ({
@@ -72,8 +67,6 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
 
   // Keyboard Callbacks
   const keyboardKeyPressedCallBack = (attrsOfKeyThatUserClicked) => {
-    // Print current key
-    //console.log(stopGame);
     if (stopGame)
       return;
 
@@ -91,18 +84,6 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
     }
 
     if (activeRowIdx === numGuessAreaColumns && attrsOfKeyThatUserClicked.isEnterKey) {
-      // evaluate user's work that is now in activeRow. The feedback boxes get
-      // stored in a 5-element array and get pushed into the completedRows.
-      // the activeRow gets reset to 5 blank boxes.
-      // the number of elements in remainingRows gets reduced by 5.
-      // if the remainingRows is empty, game is over. Display a message in the
-      // message center.
-      // if (remainingRows.length <= 0 && completedRows.length === 25) {
-      //   console.log('No More Spaces Left');
-      //   return;
-      // }
-
-
       // Get the input word and checks if the word is in the json file.
       let inputWordToCompare = [];
       let inputWordToFind = ''
@@ -112,9 +93,15 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
       });
       //console.log(inputWordToFind);
       if (!ListOfWords.words.includes(inputWordToFind)) {
-        //console.log("No valid Word");
-        //return; // UNCOMENT FOR BUILD
+        textForInfo = 'That is not a word, Try again!'
+        const newActiveRow = activeRow.slice();
+        newActiveRow[activeRowIdx - 1] = boxStyleVariants.blankBox;
+        setActiveRow(newActiveRow);
+        setActiveRowIdx(activeRowIdx - 1);
+  
+        return; // UNCOMENT FOR BUILD
       }
+      textForInfo = 'Type a 5 character word!'
 
       // Gets the answer to compare.
       let answerForCompare = [];
@@ -123,7 +110,6 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
       }
 
       // ++++++++++++++++++++++++++++++++++++++++++++++++
-      // Compare the answer and the input.
       // Check for correct character in row.
       const tempRow = activeRow.slice();
       tempRow.forEach(element => {
@@ -155,8 +141,6 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
             tempAnswer.splice(arrIndex, 1);
           }
       });
-
-
 
       // No match
       for (let index = 0; index <inputWordToCompare.length; index++) { 
@@ -244,6 +228,13 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
           alignItems: 'center',
         }}>
         <TopBanner />
+        <Typography
+          sx={{
+            fontSize: '32px',
+            color: '#ffff00',
+            fontWeight: 'bold',
+          }}>
+          {textForInfo}</Typography>
         <GuessArea guessAreaBoxes={allBoxes} />
 
         <Keyboard
@@ -252,7 +243,6 @@ const KeysRow4 = ["Z","X","C","V","B","N","M",];
         />
       </Box>
       <BasicModal toOpen={stopGame} toWin={win} />
-
       <Box
         sx={{
           paddingTop: '100px',
